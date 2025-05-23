@@ -3,561 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doom for Everyone</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>RetroZone - Classic Gaming</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap');
-        
-        :root {
-            --doom-red: #ff2d2d;
-            --doom-dark: #1a1a1a;
-            --doom-light: #f0f0f0;
-            --doom-accent: #ff8c00;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
         }
         
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--doom-dark);
-            color: var(--doom-light);
-            margin: 0;
-            padding: 0;
+            background-color: #000;
+            color: #ff0000;
             overflow-x: hidden;
         }
         
-        .pixel-font {
-            font-family: 'Press Start 2P', cursive;
+        header {
+            background-color: #000;
+            padding: 20px 0;
+            border-bottom: 3px solid #ff0000;
+            text-align: center;
         }
         
-        .doom-btn {
-            background-color: var(--doom-red);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-weight: bold;
+        h1 {
+            font-size: 3rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px #ff0000;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px #ff0000;
+            }
+            to {
+                text-shadow: 0 0 15px #ff0000, 0 0 20px #ff0000;
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .game-frame-container {
             position: relative;
-            overflow: hidden;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            margin: 30px 0;
+            border: 5px solid #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
         }
         
-        .doom-btn:hover {
-            background-color: #ff0000;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 45, 45, 0.4);
-        }
-        
-        .doom-btn:active {
-            transform: translateY(0);
-        }
-        
-        .doom-btn::after {
-            content: '';
+        .game-frame {
             position: absolute;
             top: 0;
-            left: -100%;
+            left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
+            border: none;
         }
         
-        .doom-btn:hover::after {
-            left: 100%;
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
         }
         
-        .game-panel {
-            border: 4px solid var(--doom-red);
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(255, 45, 45, 0.3);
+        .controls button {
             background-color: #000;
-            overflow: hidden;
+            color: #ff0000;
+            border: 2px solid #ff0000;
+            padding: 10px 20px;
+            margin: 0 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             transition: all 0.3s ease;
         }
         
-        .game-panel:hover {
-            box-shadow: 0 0 30px rgba(255, 45, 45, 0.5);
+        .controls button:hover {
+            background-color: #ff0000;
+            color: #000;
+            box-shadow: 0 0 15px #ff0000;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 3px solid #ff0000;
+            margin-top: 30px;
         }
         
         .scanlines {
-            position: relative;
-        }
-        
-        .scanlines::before {
-            content: "";
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: linear-gradient(
-                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0) 50%, 
                 rgba(0, 0, 0, 0.25) 50%
             );
             background-size: 100% 4px;
             pointer-events: none;
-            z-index: 10;
+            z-index: 1000;
         }
         
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(255, 45, 45, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(255, 45, 45, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(255, 45, 45, 0);
-            }
-        }
-        
-        .glitch-effect {
-            position: relative;
-        }
-        
-        .glitch-effect::before, .glitch-effect::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.8;
-        }
-        
-        .glitch-effect::before {
-            color: #0ff;
-            z-index: -1;
-            animation: glitch 3s infinite;
-        }
-        
-        .glitch-effect::after {
-            color: #f0f;
-            z-index: -2;
-            animation: glitch 2s infinite reverse;
-        }
-        
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-3px, 3px); }
-            40% { transform: translate(-3px, -3px); }
-            60% { transform: translate(3px, 3px); }
-            80% { transform: translate(3px, -3px); }
-            100% { transform: translate(0); }
-        }
-        
-        .stats-bar {
-            background: linear-gradient(90deg, #2a2a2a, #1a1a1a, #2a2a2a);
-            border-top: 2px solid var(--doom-red);
-        }
-        
-        .health-bar {
-            height: 10px;
-            background: linear-gradient(90deg, #ff0000, #ff4500);
-            border-radius: 5px;
-            transition: width 0.5s ease;
-        }
-        
-        .ammo-bar {
-            height: 10px;
-            background: linear-gradient(90deg, #ffa500, #ffd700);
-            border-radius: 5px;
-            transition: width 0.5s ease;
-        }
-        
-        .armor-bar {
-            height: 10px;
-            background: linear-gradient(90deg, #1e90ff, #00bfff);
-            border-radius: 5px;
-            transition: width 0.5s ease;
-        }
-        
-        .key {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin: 0 5px;
-        }
-        
-        .key-blue {
-            background-color: #1e90ff;
-            border: 2px solid #00bfff;
-        }
-        
-        .key-yellow {
-            background-color: #ffd700;
-            border: 2px solid #ffa500;
-        }
-        
-        .key-red {
-            background-color: #ff4500;
-            border: 2px solid #ff0000;
-        }
-        
-        .weapon {
-            transition: all 0.3s ease;
-        }
-        
-        .weapon:hover {
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 5px var(--doom-red));
-        }
-        
-        .modal {
-            display: none;
+        .pixel-overlay {
             position: fixed;
-            z-index: 100;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-        }
-        
-        .modal-content {
-            background-color: var(--doom-dark);
-            margin: 10% auto;
-            padding: 20px;
-            border: 3px solid var(--doom-red);
-            width: 80%;
-            max-width: 600px;
-            position: relative;
-        }
-        
-        .close {
-            color: #aaa;
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        .close:hover {
-            color: var(--doom-red);
-        }
-        
-        .marquee {
-            white-space: nowrap;
-            overflow: hidden;
-            box-sizing: border-box;
-        }
-        
-        .marquee span {
-            display: inline-block;
-            padding-left: 100%;
-            animation: marquee 15s linear infinite;
-        }
-        
-        @keyframes marquee {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpi+P//PwMDAwPD////Gf7//w8QYADiVAwCogQbEAAAAABJRU5ErkJggg==');
+            pointer-events: none;
+            z-index: 1001;
+            opacity: 0.1;
         }
     </style>
 </head>
 <body>
-    <!-- Header Section -->
-    <header class="bg-black py-4 border-b-4 border-red-600">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <div class="flex items-center">
-                <i class="fas fa-skull text-red-600 text-3xl mr-3"></i>
-                <h1 class="text-3xl pixel-font text-red-600 glitch-effect" data-text="DOOM FOR EVERYONE">DOOM FOR EVERYONE</h1>
-            </div>
-            <nav>
-                <ul class="flex space-x-6">
-                    <li><a href="#" class="text-white hover:text-red-500 transition duration-300" onclick="openModal('about-modal')">About</a></li>
-                    <li><a href="#" class="text-white hover:text-red-500 transition duration-300" onclick="openModal('controls-modal')">Controls</a></li>
-                    <li><a href="#" class="text-white hover:text-red-500 transition duration-300" onclick="openModal('mods-modal')">Mods</a></li>
-                    <li><button class="doom-btn pulse" onclick="openModal('fullscreen-modal')">PLAY NOW</button></li>
-                </ul>
-            </nav>
-        </div>
+    <div class="scanlines"></div>
+    <div class="pixel-overlay"></div>
+    
+    <header>
+        <h1>RetroZone</h1>
     </header>
-
-    <!-- Hero Section -->
-    <section class="relative h-96 flex items-center justify-center bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1542282811-943ef1a977c3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
-        <div class="absolute inset-0 bg-black opacity-70"></div>
-        <div class="relative z-10 text-center px-4">
-            <h2 class="text-5xl md:text-6xl pixel-font text-red-600 mb-6 glitch-effect" data-text="CLASSIC DOOM ONLINE">CLASSIC DOOM ONLINE</h2>
-            <p class="text-xl text-white mb-8 max-w-2xl mx-auto">Experience the legendary first-person shooter that defined a genre. Now playable directly in your browser!</p>
-            <button class="doom-btn text-xl" onclick="scrollToGame()">
-                <i class="fas fa-play mr-2"></i> PLAY NOW
-            </button>
+    
+    <div class="container">
+        <div class="controls">
+            <button onclick="fullscreen()">Fullscreen</button>
+            <button onclick="refresh()">Refresh</button>
         </div>
-    </section>
-
-    <!-- Game Panel Section -->
-    <section class="py-12 bg-gradient-to-b from-gray-900 to-black" id="game-section">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col lg:flex-row gap-8">
-                <!-- Game Panel -->
-                <div class="lg:w-2/3">
-                    <div class="game-panel scanlines">
-                        <div class="relative" style="padding-bottom: 75%;">
-                            <iframe id="doom-frame" src="https://doomonline1.vercel.app/" frameborder="0" class="absolute top-0 left-0 w-full h-full" allowfullscreen></iframe>
-                        </div>
-                        <div class="stats-bar p-4 flex justify-between items-center">
-                            <div class="flex items-center">
-                                <div class="mr-4">
-                                    <p class="text-sm text-gray-400 mb-1">HEALTH</p>
-                                    <div class="w-32 bg-gray-800 rounded-full h-2.5">
-                                        <div class="health-bar h-2.5 rounded-full" style="width: 100%"></div>
-                                    </div>
-                                </div>
-                                <div class="mr-4">
-                                    <p class="text-sm text-gray-400 mb-1">AMMO</p>
-                                    <div class="w-32 bg-gray-800 rounded-full h-2.5">
-                                        <div class="ammo-bar h-2.5 rounded-full" style="width: 75%"></div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-400 mb-1">ARMOR</p>
-                                    <div class="w-32 bg-gray-800 rounded-full h-2.5">
-                                        <div class="armor-bar h-2.5 rounded-full" style="width: 50%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex">
-                                <div class="key key-blue"><i class="fas fa-key"></i></div>
-                                <div class="key key-yellow"><i class="fas fa-key"></i></div>
-                                <div class="key key-red"><i class="fas fa-key"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6 flex justify-between">
-                        <button class="doom-btn" onclick="randomizeStats()">
-                            <i class="fas fa-random mr-2"></i> Randomize Stats
-                        </button>
-                        <button class="doom-btn" onclick="toggleFullscreen()">
-                            <i class="fas fa-expand mr-2"></i> Fullscreen
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Game Info -->
-                <div class="lg:w-1/3">
-                    <div class="bg-gray-800 p-6 rounded-lg border-l-4 border-red-600">
-                        <h3 class="text-2xl pixel-font text-red-600 mb-4">DOOM LEGACY</h3>
-                        <p class="text-gray-300 mb-4">Originally released in 1993, Doom pioneered the first-person shooter genre with its fast-paced action, dark atmosphere, and revolutionary network multiplayer.</p>
-                        <p class="text-gray-300 mb-6">This browser version brings the classic experience to modern platforms with enhanced controls and accessibility.</p>
-                        
-                        <div class="mb-6">
-                            <h4 class="text-xl text-white mb-3">WEAPONS</h4>
-                            <div class="grid grid-cols-4 gap-3">
-                                <div class="weapon text-center">
-                                    <i class="fas fa-hand-rock text-2xl text-gray-400"></i>
-                                    <p class="text-xs text-gray-400 mt-1">FIST</p>
-                                </div>
-                                <div class="weapon text-center">
-                                    <i class="fas fa-gun text-2xl text-gray-400"></i>
-                                    <p class="text-xs text-gray-400 mt-1">PISTOL</p>
-                                </div>
-                                <div class="weapon text-center">
-                                    <i class="fas fa-gun text-2xl text-yellow-500"></i>
-                                    <p class="text-xs text-gray-400 mt-1">SHOTGUN</p>
-                                </div>
-                                <div class="weapon text-center">
-                                    <i class="fas fa-fire text-2xl text-orange-500"></i>
-                                    <p class="text-xs text-gray-400 mt-1">PLASMA</p>
-                                </div>
-                                <div class="weapon text-center">
-                                    <i class="fas fa-bolt text-2xl text-blue-400"></i>
-                                    <p class="text-xs text-gray-400 mt-1">CHAINSAW</p>
-                                </div>
-                                <div class="weapon text-center">
-                                    <i class="fas fa-rocket text-2xl text-red-500"></i>
-                                    <p class="text-xs text-gray-400 mt-1">ROCKET</p>
-                                </div>
-                                <div class="weapon text-center">
-                                    <i class="fas fa-radiation text-2xl text-green-500"></i>
-                                    <p class="text-xs text-gray-400 mt-1">BFG</p>
-                                </div>
-                                <div class="weapon text-center">
-                                    <i class="fas fa-skull text-2xl text-purple-500"></i>
-                                    <p class="text-xs text-gray-400 mt-1">SOUL</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <h4 class="text-xl text-white mb-3">GAME STATS</h4>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-gray-900 p-3 rounded">
-                                    <p class="text-sm text-gray-400">KILLS</p>
-                                    <p class="text-2xl text-red-500">0/100</p>
-                                </div>
-                                <div class="bg-gray-900 p-3 rounded">
-                                    <p class="text-sm text-gray-400">SECRETS</p>
-                                    <p class="text-2xl text-yellow-500">0/5</p>
-                                </div>
-                                <div class="bg-gray-900 p-3 rounded">
-                                    <p class="text-sm text-gray-400">ITEMS</p>
-                                    <p class="text-2xl text-blue-500">0/25</p>
-                                </div>
-                                <div class="bg-gray-900 p-3 rounded">
-                                    <p class="text-sm text-gray-400">TIME</p>
-                                    <p class="text-2xl text-green-500">00:00</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="py-16 bg-black">
-        <div class="container mx-auto px-4">
-            <h2 class="text-4xl pixel-font text-red-600 text-center mb-16">WHY PLAY DOOM?</h2>
-            
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-gray-900 p-8 rounded-lg border-t-4 border-red-600 transform transition duration-500 hover:scale-105">
-                    <div class="text-red-600 text-4xl mb-4">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3 class="text-2xl text-white mb-3">FAST-PACED ACTION</h3>
-                    <p class="text-gray-400">Experience the adrenaline rush of non-stop demon slaying with responsive controls and intense combat scenarios.</p>
-                </div>
-                
-                <div class="bg-gray-900 p-8 rounded-lg border-t-4 border-red-600 transform transition duration-500 hover:scale-105">
-                    <div class="text-red-600 text-4xl mb-4">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3 class="text-2xl text-white mb-3">MULTIPLAYER</h3>
-                    <p class="text-gray-400">Battle against friends or team up to survive the demonic invasion in classic deathmatch and cooperative modes.</p>
-                </div>
-                
-                <div class="bg-gray-900 p-8 rounded-lg border-t-4 border-red-600 transform transition duration-500 hover:scale-105">
-                    <div class="text-red-600 text-4xl mb-4">
-                        <i class="fas fa-puzzle-piece"></i>
-                    </div>
-                    <h3 class="text-2xl text-white mb-3">MOD SUPPORT</h3>
-                    <p class="text-gray-400">Extend your experience with thousands of community-created mods, maps, and total conversions.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Community Section -->
-    <section class="py-16 bg-gradient-to-b from-black to-gray-900">
-        <div class="container mx-auto px-4">
-            <h2 class="text-4xl pixel-font text-red-600 text-center mb-8">JOIN THE COMMUNITY</h2>
-            <p class="text-xl text-gray-400 text-center max-w-3xl mx-auto mb-12">Connect with millions of Doom fans worldwide, share your gameplay, and discover new content.</p>
-            
-            <div class="bg-gray-900 rounded-lg p-6 max-w-4xl mx-auto">
-                <div class="marquee bg-gray-800 p-3 mb-6 rounded">
-                    <span class="text-red-500">
-                        <i class="fas fa-bullhorn mr-2"></i> NEW UPDATE: Added Episode 4 levels! | WEEKLY CHALLENGE: Ultra-Nightmare speedrun | COMMUNITY SPOTLIGHT: Check out "Doom: The Golden Souls 3" mod
-                    </span>
-                </div>
-                
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div class="bg-gray-800 p-6 rounded-lg">
-                        <h3 class="text-xl text-white mb-4 flex items-center">
-                            <i class="fas fa-trophy text-red-600 mr-3"></i> LEADERBOARDS
-                        </h3>
-                        <ul class="space-y-3">
-                            <li class="flex justify-between items-center bg-gray-700 p-2 rounded">
-                                <span class="text-white">1. DemonSlayer99</span>
-                                <span class="text-yellow-400">1:24:56</span>
-                            </li>
-                            <li class="flex justify-between items-center bg-gray-700 p-2 rounded">
-                                <span class="text-white">2. BFG_Master</span>
-                                <span class="text-gray-400">1:26:12</span>
-                            </li>
-                            <li class="flex justify-between items-center bg-gray-700 p-2 rounded">
-                                <span class="text-white">3. DoomGuy2023</span>
-                                <span class="text-gray-400">1:27:45</span>
-                            </li>
-                            <li class="flex justify-between items-center bg-gray-700 p-2 rounded">
-                                <span class="text-white">4. ChainsawQueen</span>
-                                <span class="text-gray-400">1:28:33</span>
-                            </li>
-                            <li class="flex justify-between items-center bg-gray-700 p-2 rounded">
-                                <span class="text-white">5. HellWalker</span>
-                                <span class="text-gray-400">1:29:01</span>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <div class="bg-gray-800 p-6 rounded-lg">
-                        <h3 class="text-xl text-white mb-4 flex items-center">
-                            <i class="fas fa-comments text-red-600 mr-3"></i> RECENT DISCUSSIONS
-                        </h3>
-                        <ul class="space-y-3">
-                            <li class="bg-gray-700 p-3 rounded">
-                                <p class="text-white mb-1">"Best weapons for Nightmare difficulty?"</p>
-                                <p class="text-sm text-gray-400">by DoomTactician - 12 comments</p>
-                            </li>
-                            <li class="bg-gray-700 p-3 rounded">
-                                <p class="text-white mb-1">"Show your custom maps!"</p>
-                                <p class="text-sm text-gray-400">by LevelDesigner - 24 comments</p>
-                            </li>
-                            <li class="bg-gray-700 p-3 rounded">
-                                <p class="text-white mb-1">"Speedrun tips for Episode 1"</p>
-                                <p class="text-sm text-gray-400">by FastDemon - 8 comments</p>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="mt-6 text-center">
-                    <button class="doom-btn">
-                        <i class="fab fa-discord mr-2"></i> JOIN DISCORD
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-black py-8 border-t-4 border-red-600">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0">
-                    <h2 class="text-2xl pixel-font text-red-600">DOOM FOR EVERYONE</h2>
-                    <p class="text-gray-500">The classic shooter, now in your browser</p>
-                </div>
-                
-                <div class="flex space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-red-600 text-2xl"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-red-600 text-2xl"><i class="fab fa-youtube"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-red-600 text-2xl"><i class="fab fa-twitch"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-red-600 text-2xl"><i class="fab fa-github"></i></a>
-                </div>
-            </div>
-            
-            <div class="mt-8 pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
-                <p>DOOM is a registered trademark of id Software LLC. This is an unofficial fan project not affiliated with id Software or Bethesda.</p>
-                <p class="mt-2">© 2023 Doom for Everyone | All Rights Reserved</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Modals -->
-    <div id="about-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('about-modal')">&times;</span>
-            <h2 class="text-2xl pixel-font text-red-600 mb-4">ABOUT DOOM</h2>
-            <p class="text-gray-300 mb-4">Doom is a first-person shooter game developed by id Software and released in 1993. It is considered one of the most significant and influential titles in video game history.</p>
-            <p class="text-gray-300 mb-4">This browser version allows you to play the classic game without any downloads or installations. It includes the full first episode (Knee-Deep in the Dead) with all nine levels.</p>
-            <p class="text-gray-300">The game runs using WebAssembly technology, bringing the original DOS experience to modern browsers with improved controls and performance.</p>
+        
+        <div class="game-frame-container">
+            <iframe class="game-frame" src="https://www.retrogames.onl/" allowfullscreen></iframe>
         </div>
     </div>
-
-    <div id="controls-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('controls-modal
+    
+    <footer>
+        <p>© 2023 RetroZone - All games property of their respective owners</p>
+    </footer>
+    
+    <script>
+        function fullscreen() {
+            const frame = document.querySelector('.game-frame');
+            if (frame.requestFullscreen) {
+                frame.requestFullscreen();
+            } else if (frame.webkitRequestFullscreen) {
+                frame.webkitRequestFullscreen();
+            } else if (frame.msRequestFullscreen) {
+                frame.msRequestFullscreen();
+            }
+        }
+        
+        function refresh() {
+            document.querySelector('.game-frame').src = 'https://www.retrogames.onl/';
+        }
+        
+        // Add CRT TV effect on click
+        document.addEventListener('click', function() {
+            const body = document.body;
+            body.classList.add('crt-effect');
+            setTimeout(() => {
+                body.classList.remove('crt-effect');
+            }, 300);
+        });
+    </script>
+</body>
 </html>
