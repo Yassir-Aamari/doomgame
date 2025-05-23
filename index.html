@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RetroZone - made by ceo Yassir<title>
+    <title>RetroZone - made by CEO Yassir</title>
     <style>
         * {
             margin: 0;
@@ -11,20 +11,20 @@
             box-sizing: border-box;
             font-family: 'Courier New', monospace;
         }
-        
+
         body {
             background-color: #000;
             color: #ff0000;
             overflow-x: hidden;
         }
-        
+
         header {
             background-color: #000;
             padding: 20px 0;
             border-bottom: 3px solid #ff0000;
             text-align: center;
         }
-        
+
         h1 {
             font-size: 3rem;
             text-transform: uppercase;
@@ -32,7 +32,7 @@
             text-shadow: 0 0 10px #ff0000;
             animation: glow 1.5s ease-in-out infinite alternate;
         }
-        
+
         @keyframes glow {
             from {
                 text-shadow: 0 0 5px #ff0000;
@@ -41,13 +41,13 @@
                 text-shadow: 0 0 15px #ff0000, 0 0 20px #ff0000;
             }
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        
+
         .game-frame-container {
             position: relative;
             width: 100%;
@@ -56,7 +56,7 @@
             border: 5px solid #ff0000;
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
         }
-        
+
         .game-frame {
             position: absolute;
             top: 0;
@@ -65,13 +65,13 @@
             height: 100%;
             border: none;
         }
-        
+
         .controls {
             display: flex;
             justify-content: center;
             margin-bottom: 20px;
         }
-        
+
         .controls button {
             background-color: #000;
             color: #ff0000;
@@ -84,20 +84,20 @@
             letter-spacing: 2px;
             transition: all 0.3s ease;
         }
-        
+
         .controls button:hover {
             background-color: #ff0000;
             color: #000;
             box-shadow: 0 0 15px #ff0000;
         }
-        
+
         footer {
             text-align: center;
             padding: 20px;
             border-top: 3px solid #ff0000;
             margin-top: 30px;
         }
-        
+
         .scanlines {
             position: fixed;
             top: 0;
@@ -112,7 +112,7 @@
             pointer-events: none;
             z-index: 1000;
         }
-        
+
         .pixel-overlay {
             position: fixed;
             top: 0;
@@ -124,31 +124,42 @@
             z-index: 1001;
             opacity: 0.1;
         }
+
+        /* Optional CRT effect flash */
+        .crt-effect {
+            animation: flicker 0.3s;
+        }
+
+        @keyframes flicker {
+            0% { filter: brightness(1.2); }
+            50% { filter: brightness(0.8); }
+            100% { filter: brightness(1); }
+        }
     </style>
 </head>
 <body>
     <div class="scanlines"></div>
     <div class="pixel-overlay"></div>
-    
+
     <header>
         <h1>RetroZone</h1>
     </header>
-    
+
     <div class="container">
         <div class="controls">
             <button onclick="fullscreen()">Fullscreen</button>
             <button onclick="refresh()">Refresh</button>
         </div>
-        
+
         <div class="game-frame-container">
             <iframe class="game-frame" src="https://www.retrogames.onl/" allowfullscreen></iframe>
         </div>
     </div>
-    
+
     <footer>
-        <p>© 2023 RetroZone - All games property of their respective owners by ceo Yassir</p>
+        <p>© 2023 RetroZone - All games are property of their respective owners. Made by CEO Yassir.</p>
     </footer>
-    
+
     <script>
         function fullscreen() {
             const frame = document.querySelector('.game-frame');
@@ -160,13 +171,13 @@
                 frame.msRequestFullscreen();
             }
         }
-        
+
         function refresh() {
             document.querySelector('.game-frame').src = 'https://www.retrogames.onl/';
         }
-        
-        // Add CRT TV effect on click
-        document.addEventListener('click', function() {
+
+        // CRT flash on click
+        document.addEventListener('click', function () {
             const body = document.body;
             body.classList.add('crt-effect');
             setTimeout(() => {
